@@ -1,0 +1,112 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Classification
+}
+\title{Vulnerability Classification}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Vulnerability Classification}
+Classify the nature of a vulnerability based upon the component affected. While the class will not be comprehensive,
+it will explain a number of common vulnerability vectors and the factors which impact discovery and remediation.
+\end{slide}
+
+\begin{slide}{Vulnerability Scope}
+Covered vulnerability types:
+\begin{itemize}
+ \item Software (userland \& supervisor)
+ \item Language design concerns
+ \item Network / Protocol vulnerabilities
+ \item Hardware Architecture
+ \item Configuration
+ \item User / Social Engineering
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Software (userland)}
+Key considerations:
+\begin{itemize}
+ \item Sometimes, design/impl under your control
+ \item Exposure risk can be limited to user's access
+ \item Code review where available
+ \item Static analyzers, run-time profilers
+ \item May use production environment
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Software (supervisor)}
+Key considerations:
+\begin{itemize}
+ \item Rarely design/impl under your control (unless you are OS/driver dev)
+ \item Exposure risk can lead to complete access
+ \item Typically must recreate clone of run-time environment
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Language Design Concerns}
+Key considerations:
+\begin{itemize}
+ \item Lead to frequent unintended vulnerabilities
+ \item Influence coding habits / styles
+ \item Educational
+ \item Example: C vs. Ada
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Network / Protocol Vulnerability}
+Key considerations:
+\begin{itemize}
+ \item Lack of input control by default
+ \item Streaming rather than finite data source
+ \item Concurrency
+ \item Pass-through / side-channel
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Hardware}
+Key considerations:
+\begin{itemize}
+ \item Development cycles
+ \item Replacement cost
+ \item Rarely design/impl. under control
+ \item Opacity
+ \item Physical limitations
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Configuration}
+Key considerations:
+\begin{itemize}
+ \item Low remediation cost
+ \item Typically entirely within control
+ \item Documentation
+ \item Training / experience
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Human}
+Key considerations:
+\begin{itemize}
+ \item Human Behavior
+ \item Sophistication
+ \item UX pain-points
+ \item Documentation / training
+ \item Awareness
+ \item Skepticism
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Cyber Attack}
+Typically comprises two or more of these vulnerability vectors. The term "exploit" is used to describe
+when an attacker leverages a vulnerability for unauthorized access or effect. As a noun, it is commonly
+used to describe a program or method which can reproducibly exploit one or more vulnerabilities.
+\end{slide}
+
+\end{document}

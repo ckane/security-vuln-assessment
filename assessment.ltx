@@ -1,0 +1,130 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Assessment Process
+}
+\title{Vulnerability Assessment Process}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Vulnerability Assessment}
+Assessment is the practice of discovering the vulnerabilties posed by an environment, determining their
+negative risk impact, and documenting these observations for future planning. In some cases, this may drive
+modifications to a network or business practice to eliminate the vulnerability or reduce its exposure. In
+other cases, one might implement montioring to notify in the event that an identified vulnerability is being exploited
+in the environment.
+\end{slide}
+
+\begin{slide}{Methodology: OWASP Approach}
+\begin{itemize}
+\item Actively developing field
+\item As many methodologies as commercial providers
+\item OWASP approach describes six steps to develop a risk analysis
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Basic Heuristic}
+Generalized equation:
+\begin{itemize}
+\item \textbf{Risk = Likelihood * Impact}
+\item Identify what exposures you would like to assess the risk of
+\item use the process to calculate the Likelihood / Impact of those exposures
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Step 1: Identify Risk(s)}
+Determine what exposure you are concerned about. Some considerations for this:
+\begin{itemize}
+\item What might a breach objective be?
+\item Who might attempt, vs. who would not?
+\item What aspects of your business should be in scope / out of scope?
+\item What type of attack is in/out of scope?
+\item What would your loss cost be?
+\end{itemize}
+
+Coming up with realistic and well-defined scenarios/scopes that you are developing to will
+ensure the assessment is meaningful for your business cases.
+\end{slide}
+
+\begin{slide}{Step 2: Estimating Likelihood}
+Two primary contributors to this:
+\begin{itemize}
+\item Threat Agent factors
+\item Vulnerability factors
+\end{itemize}
+
+Come up with rating criteria, and a scoring system (for example, 0-9)
+\end{slide}
+
+\begin{slide}{Step 2: Likelihood (Threat Agent)}
+Better adversaries are expected to have greater success in successfully exposing you. You may grade your adversaries based upon
+arbitrarily-selected, applicable criteria.
+\begin{itemize}
+ \item Skill level: Red teaming skills(9), Network programming skills (7), Scritping skills (4), No skills (1)
+ \item Motive: Funding level, priority level - Nation-state (9), Criminal activity (6), Opporutnist (3)
+ \item Opportunity: Situational characteristics to increase (9) or decrease (0) the likelihood of attacking
+ \item Size: Size of threat agent group, resourcing which can be applied to the attack: Lone actor (1), Small team (3), Army unit (7),
+       Internet-scale (9)
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Step 2: Likelihood (Vulnerability Factors)}
+\begin{itemize}
+\item Ease of discovery / Security-through-obscurity
+\item Ease of exploit
+\item Awareness
+\item Intrusion detection / instrumentation
+\end{itemize}
+
+Many of these items are under direct control of the entity being assessed, and therefore provide the starting measurements
+for improvement projects
+\end{slide}
+
+\begin{slide}{Step 3: Estimating Impact}
+\begin{itemize}
+ \item Technical impact, losses of: Confidentiality, integrity, availability, accountability
+ \item Business impact: Financial damage, Reputational damage, Non-compliance, Privacy violation
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Step 4: Determine the Risk Rating}
+Use the Impact \& Vulnerability computations earlier to calculate an average value for the purpose
+of reporting the risk rating.
+
+Reporting options:
+\begin{itemize}
+ \item May choose Low/Medium/High/Critical level descriptors
+ \item May want to apply weightings to certain criteria
+ \item May want to report where recipient is in relation to peers
+ \item Frequency of activity/breaches at current risk rating level
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Step 5: Remediation Planning}
+Determine what to fix.
+
+Using the vulnerability ratings, you can scope improvment projects based upon
+lower-scoring vulnerability factors.
+
+Options can be reported alongside implementation costs to assist in project selection
+and planning.
+\end{slide}
+
+\begin{slide}{Step 6: Customizing Risk Rating}
+Competing principles:
+\begin{itemize}
+\item Threat landscape is not a constant, but an ever-changing dynamic system
+\item Assessment is most meaningful when it can be kept constant across multiple measurement cycles
+\end{itemize}
+
+As time goes on, you'll want to use knowledge of reported activity to inform changes. Possibly overlay "old" and "new" rating
+systems in reports, to illustrate ongoing improvement while ensuring that reporitng is kept up to date
+\end{slide}
+
+\end{document}

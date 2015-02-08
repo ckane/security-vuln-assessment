@@ -1,0 +1,63 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Memory Corruption
+}
+\title{Memory Corruption Vulnerabilities}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Memory Corruption Vulnerabilties}
+ Typically caused by logic errors in memory management. A common root cause are mistakes made due to mis-understandings
+ using the C programming language, which will be used for a lot of the examples in this class.
+\end{slide}
+
+\begin{slide}{Memory Corruption Vulnerabilties}
+ Many exploit vectors are introduced via memory corruption bugs. The primary ones covered by this class:
+ \begin{itemize}
+  \item Buffer overflow
+  \item Heap overflow
+  \item Stack overflow
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Buffer Overflow}
+Commonly caused by creating dynamically-allocated memory, and then storing more data into the buffer than it
+was originally allocated to contain.
+
+Example:\par
+{\tt char *answer = (char*)malloc(10);\\
+printf("Enter the answer: ");\\
+scanf("\%s", answer);}
+\par
+\vspace{0.25in}
+{\tt Enter the answer: This answer is more than 10 bytes}
+
+\end{slide}
+
+\begin{slide}{Heap Overflow}
+Special type of buffer overflow, the previous example is an example of a heap overflow vector. Heap is a large
+data structure in memory where dynamic allocation data as well as infrastructure lives. The heap is the block
+of memory commonly managed by the \texttt{malloc} and \texttt{free} calls.
+\end{slide}
+
+\begin{slide}{Stack Overflow}
+The x86 architecture, and many others, store return pointers, function arguments, return values, and temporary (local) variables
+on the stack. Typically created by driving program flow, and commonly the implementation of parsers accepting input data can cause
+this.
+\par
+Some causes of stack overflow:
+\begin{itemize}
+ \item Deep/infinite recursion
+ \item Stack variables
+ \item Indirect recursion (A() calls B(), but B() can also call A())
+\end{itemize}
+\end{slide}
+
+\end{document}

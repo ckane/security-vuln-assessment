@@ -1,0 +1,62 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Return Oriented Programming
+}
+\title{Return Oriented Programming}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Introduction}
+An approach used to determine location of program execution, in order to establish control over
+execution of a system. Once an exploit is successful, ROP is typically used in order to get the
+intended shell-code to execute. In many cases, the exact location in memory where an exploit
+succeeds is not easily determined.
+\end{slide}
+
+\begin{slide}{Heap Spray}
+A common technique to work around this is the "heap spray". Take a small (1k-4k) chunk of simple
+assembled machine code, repeat it across many pages of memory, and each time you've increased the
+likelihood that a "random" jump will enter one of your deployed blocks of malicious code.
+\end{slide}
+
+\begin{slide}{NOP Sled/Fill}
+\begin{itemize}
+\item Fill or pad large sections of memory with simple instructions which can be repetitive, and non-destructively
+control program flow.
+\item Landing anywhere within the "sled" will gracefully catch and continue execution
+\item The x86 architecture has a NO-OP instruction (what amounts to EIP++ or RIP++) called "NOP" [0x90]
+\item Simple operations (INC EAX [0x41], INC EBX, etc...) may also be used
+\item Can get execution into a spot where offset to more executable shellcode can be determined
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Return from call}
+Common approach is to perform the following sequence to determine current execution, following sled:\\
+\texttt{INC EAX\\
+INC EAX\\
+INC EAX\\
+CALL +0x220\\
+<evil code>\\
+...\\
+POP EAX\\
+JUMP EAX}
+\end{slide}
+
+\begin{slide}{Gaining Control}
+Once control is gained, you know:
+\begin{itemize}
+ \item Where you are executing code
+ \item Where, from your reference, other malicious code is implanted
+\end{itemize}
+Common themes include: loading more code from external files, decrypt loops to decrypt other concealed shell code,
+enumerating linked-in API functions (you have access to all DLL's loaded by exploite application)
+\end{slide}
+
+\end{document}

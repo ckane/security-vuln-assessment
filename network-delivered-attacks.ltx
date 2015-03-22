@@ -1,0 +1,150 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Network Based Attacks
+}
+\title{Network Based Attacks}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Network Based Attacks}
+Network based attacks are those which utilize the interconnectivity of systems for the purpose of launching cyber attacks. This approach
+has become increasingly more prevalent as the public Internet becomes an ever-increasing part of everyone's every day lives. These attacks
+may include data theft, destruction, and/or availability attacks against networks or users.
+\end{slide}
+
+\begin{slide}{Denial of Service}
+Denial of service attacks typically refer to attempts to attack a system in such a way as to prevent the operation or accessibility of the
+system to legitimate user traffic. There is a subset known as "distributed" attacks which involve the coordination of multiple attack hosts
+targeting individual or small sets of systems to increase the chances of success and reduce the likelihood of prevention.
+\end{slide}
+
+\begin{slide}{Spoofing, Forgery Attacks}
+Spoofing attacks are used to mask the origin of an attack in an effort to convince a target that a different host or entity is the source of
+the traffic. This attack takes advantage of:
+\begin{itemize}
+ \item Trust relationships between the target and adjacent equipment/systems
+ \item Trust relationships between the target and the spoofed infrastructure or user
+\end{itemize}
+Some examples: ARP spoofing/poisining, Phishing, DNS injection
+\end{slide}
+
+\begin{slide}{Eavesdropping}
+Eavesdropping attacks involve intercepting and monitoring activity from one or more targets. This is commonly used to steal credentials and
+internal information about systems. This typically requires a significant investment in effort by the adversary in maintaining a constant
+connection to the collection system.
+\end{slide}
+
+\begin{slide}{Application-Layer Attacks}
+These types of attacks frequently target the network supported application for the purpose of exploiting application-level vulnerabilities
+which can provide any of the following, among others:
+\begin{itemize}
+ \item Remote-command execution
+ \item Data leakage (path traversal exploit, etc...)
+ \item Data modification / data destruction
+ \item Query injection
+ \item Impersonation
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Stateful TCP Connections}
+TCP network stacks frequently rely upon pre-allocated resources and hard limits. In a normal TCP communication, there's a three-way handshake
+using the stateless IP (Internet Protocol) to build the stateful TCP (Transmission Control Protocol) on top of:
+\begin{itemize}
+ \item Client sends SYN packet to server
+ \item Server allocates connection resource, sends SYN+ACK
+ \item Client responds with ACK
+ \item ...
+ \item Client or server terminates connection with FIN, server reclaims resources allocated
+\end{itemize}
+If the SYN is not ACKnowledged by the client in a reasonable amount of time (3rd step), the server reclaims the connection resources. 
+
+\end{slide}
+
+\begin{slide}{SYN Flood Denial of Service}
+All OSes have a maximum connection count limit which, when hit, causes the server to refuse new connections. An attacker can take
+advantage of the stateful protocol design by issuing enough SYN attempts, without acknowledging the server response, such that they
+exhaust this hard connection limit.
+\end{slide}
+
+\begin{slide}{DoS Mitigations}
+There are numerous mitigations, but a really common mitigation is to assume that each client will only really need a handful (3-5) concurrent
+connections at any time in order to maintain a desirable level of service for the user. Making this assumption, firewalling techniques can be
+implemented to limit the ability of one client by itself to cause this denial of service.\par
+Counting and tracking the concurrent connection attempts by client IP can help inform which sources are actually malicious from those which are
+simply misbehaving.
+\end{slide}
+
+\begin{slide}{Distributed Denial of Service (DDoS)}
+Leveraging a Botnet, say coordinated over a shared XMPP chat server, attackers can circumvent IP-classification mitigations by controlling 100's of
+servers to exhaust the maximum connection limit, distributing the attempt across multiple source attack IPs. This enables a mechanism such that 100's
+or 1000's of hosts, attempting even a low count of 3-5 concurrent connections, can rapidly exhaust this limit.
+\end{slide}
+
+\begin{slide}{ARP}
+The Address Resolution Protocol is the protocol by which a system implementing IP can associate other IP addresses with Ethernet hardware addresses on
+a network segment. Generally, associating a new device onto a network using the IP protocol functions using the following sequence:
+\begin{itemize}
+ \item System sends an ARP probe, sourced from \texttt{0.0.0.0} to ask whether the IP address it is configured to use is already claimed by another system
+ \item System assigns desired IP, if no conflict, otherwise system owner is alerted
+\end{itemize}
+\end{slide}
+
+\begin{slide}{ARP (cont.)}
+\begin{itemize}
+ \item To communicate to another host on the network, when given an IP, the system sends a broadcast ARP to MAC address \texttt{FF:FF:FF:FF:FF:FF} looking
+       for the desired IP.
+ \item The claiming host responds with its MAC address
+ \item The system may (typically) store this mapping in a local cache
+ \item Systems on the network may "announce" their MAC<->IP mappings on the network, which causes other hosts to update their dynamic mapping tables
+\end{itemize}
+\end{slide}
+
+\begin{slide}{ARP Spoofing}
+In cases where the network is unswitched (all ethernet packets are distributed to all connected hosts), it is feasible to attach a system which can intercept
+and respond to traffic intended to be sent to a legitimate host. This enables impersonation, and has become less frequently used as more sophisticated
+network infrastructure has become more affordable. For example, it is very rare to even purchase a "hub" for a home network, as "network switches" have become
+unbiquitous.
+\end{slide}
+
+\begin{slide}{ARP Poisoning}
+The \textit{ARP announcement} feature can be exploited to broadcast fradulent MAC<->IP associations to all hosts connected even to a switched network. Using
+the dynamic table functionality, a common attack is to identify the default gateway IP address for a public network by connecting as a legitimate client. Once
+this is identified, the attacker can periodically broadcast ARP announcements that map its own MAC address to all hosts connected to the network.
+\end{slide}
+
+\begin{slide}{ARP Poisoning (cont.)}
+Considerations to ensure success of this technique:
+\begin{itemize}
+ \item Attacker may choose to not respond to ARP lookups for the masqueraded IP (helps operate in stealth mode)
+ \item Attacker may time announcements to coincide shortly after legit announcements/responses
+ \item Attacker would time regular refreshes or even "storms" to force updates to peer tables
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Man-in-the-middle}
+A common application enabled by the above ARP poisoning attack would be the \textit{man in the middle} attack. Spoofing
+the gateway causes targets to believe they are communicating with the (trusted) gateway, when in fact they are communicating
+with the attacker. The attacker can use its knowledge of the network to proxy requests on behalf of the target to the real
+gateway, potentially inspecting the traffic in one or both directions in the process.\par
+Plain-text protocols, like many legacy email protocols, can be inspected to steal credentials. Additionally, personal
+information can also be stolen when posted to web-forms.
+\end{slide}
+
+\begin{slide}{Query Injection}
+Many web-based data lookup systems, such as storefronts, are backed by a database. Frequently this is an SQL database, to which
+some data entered by the client is translated into a structured query language (SQL) before being executed on the database. The
+access to this database is frequently read/write, and improper \textit{sanitization} of the data entered by an attacker can enable
+the attacker to execute modification queries against the data in the database.
+\end{slide}
+
+\end{document}

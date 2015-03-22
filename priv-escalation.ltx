@@ -1,0 +1,159 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Privilege Escalation
+}
+\title{Privilege Escalation}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Introduction}
+\textbf{Privilege Escalation} or \textbf{Elevation} is the act of gaining access to resources which were intended to be
+protected by authorization mechanisms built into the targeted system. Generally, these are divided into two families:
+\begin{itemize}
+ \item Horizontal
+ \item Vertical
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Horizontal Escalation}
+Generally speaking, this type of escalation occurs when the human-computer or computer-computer interface is intended to
+serve as "gate keeper" for access to internal-only resources on the system. In other words, the attacker exploits flaws in
+the UI to gain unrestricted access to everything that the underlying application would be able to access.
+\par
+Some examples:
+\begin{itemize}
+ \item SQL Injection attacks
+ \item XSS attacks
+ \item Escape to shell
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Vertical Escalation}
+Use of existing access (whether granted or illicit) to gain resource access beyond what the current user or role is supposed
+to have access to. In many cases, the act being described is elevating from "normal user" to "administrator" or "root" privileges
+on a system.
+\par
+Examples:
+\begin{itemize}
+ \item Win7Elevate / UAC Bypass 
+ \item "setuid" root binary UNIX exploit
+ \item Device Driver exploits
+ \item \texttt{syscall} exploits
+\end{itemize}
+\end{slide}
+
+\begin{slide}{HW Protection "Rings"}
+Implemented by modern CPUs to enable arbitrary execution of native code while protecting systems
+\begin{itemize}
+ \item HW offers multiple run modes, or "rings", where direct access to some features are permitted
+ \item Code "asks permission" to switch to more privileged "ring"
+ \item HW verifies authorization criteria are met
+ \item In most systems, 2 modes: Supervisor \& User
+ \item Don't confuse with "root"/"administrator" and "non-root" user processes
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Rings and OSs}
+General OS division of code execution:
+\begin{itemize}
+ \item Supervisor: Bootloader, kernel code, device driver code
+ \item User: Applications, user commands, event "root" user programs
+\end{itemize}
+
+Some exceptions include Windows NT \& Mac OS X (XNU kernel), which both can run "device drivers" as limited
+userland service applications that make kernel requests for their device interactions. However, they continue
+to offer the option to run as supervisor as well.
+
+\end{slide}
+
+\begin{slide}{OS userland}
+Most OS's conceptualize permission groups based upon "privileged" and "unprivileged" user accounts
+\begin{itemize}
+ \item Applications and services are executed by user, retaining privileges of the starting user, with the
+       option to "downgrade" permission for security
+ \item OS provides "API" for secure device/resource interactions by user ring code
+ \item "Root" user typically granted access to whatever is asked for, while "non-root" is forced to operate with a
+       limited set of privileges
+ \item "setuid" and similar typically provide controlled temporary task-specific privilege elevation
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Running as non-root}
+Common non-root local-system privileges consist of:
+\begin{itemize}
+ \item Starting new processes
+ \item Reading/writing data controlled by the user or access-granted to the user
+ \item Process mgmt for any processes running by that user
+ \item Initiating network communications, or listening on TCP/UDP ports >1024
+ \item Access to local OS APIs \& libraries
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Running as root}
+In addition to all non-root privileges, root generally has expanded privileges:
+\begin{itemize}
+ \item Adding/removing users, setting passwords, privileges
+ \item Read/write ANY file (regardless of whether access explicitly granted)
+ \item Installing/removing device drivers
+ \item Replacing programs, libraries, etc...
+ \item OS grants special access when root uses APIs / libraries
+ \item Access to all devices, memory
+ \item Process management across entire system
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Vertical Escalation}
+This structure presents us with two common vectors to gain vertical privilege escalation:
+\begin{itemize}
+ \item Using OS APIs/syscall vulnerabilities to inject arbitrary code into Supervisor mode
+ \item Using user-mode vulnerabilities in applications running as "root" to inject arbitrary code/commands as "root"
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Virtualization, or "Ring -1"}
+Virtualization is an increasingly popular feature of modern consumer CPUs, however it has been around for a long time. This
+feature adds a new super-supervisor level to the management of the operating system(s). The isolation enables a system owner
+to host multiple full OS's with fine-grained resource access control, where a complete compromise of one OS cannot escape
+into other hosted operating systems.
+\end{slide}
+
+\begin{slide}{Virtualization Model}
+Generally speaking, virtualization is facilitated by a hypervisor, which can be configured to selectively
+grant access to the following resources (among others):
+\begin{itemize}
+ \item Number of CPU's and \% of CPU time
+ \item Upper bound on virtual-physical memory (HV will allocate virt mem that VM thinks is physical mem)
+ \item Virtualized I/O devices
+ \item Direct hardware access (controlled)
+ \item APIs provided by hypervisor available for each VM
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Hypervisors}
+Here are some examples of hypervisors:
+\begin{itemize}
+ \item VirtualBox \url{http://virtualbox.org} (will frequently be used for examples) 
+ \item VMWare \url{http://www.vmware.com}
+ \item Xen \url{http://www.xenproject.org}
+ \item KVM \url{http://www.linux-kvm.org}
+ \item bhyve \url{http://bhyve.org}
+\end{itemize}
+Some vulnerabilities:\par
+\url{http://cromwell-intl.com/security/virtualization.html}
+\end{slide}
+
+\begin{slide}{Cloud Computing}
+The isloation and abstraction layers in hypervisors are the primary elements enabling "cloud computing". This provisioning
+approach also relies upon the inherent "Ring -1" security features to allow multiple customers the flexibility of executing
+virtual systems on shared hardware owned by a third party. However, some new exposure risks may present themselves if you are
+making assumptions common to traditional "bare metal" systems.
+\end{slide}
+
+\end{document}

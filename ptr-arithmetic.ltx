@@ -1,0 +1,56 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Pointer Arithmetic Vulnerabilities
+}
+\title{Pointer Arithmetic Vulnerabilities}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Pointers review}
+Pointers are variables which contain the memory address where a value is located. In this way, they are
+variables which contain data that \textit{point to} values, contrasting them with variables that store
+values.
+\end{slide}
+
+\begin{slide}{Pointers Arithmetic Rules}
+Pointers contain memory addresses, and we all know memory addresses are treated much like other integer
+values by the CPU. Thus, arithmetic operations are implemented in C when using pointers. The behavior may
+not be intutive, especially to those using pointers in other langauges (ASM, Pascal, Basic):
+\begin{itemize}
+ \item Resultant type of pointer arithmetic is the pointer type being operated on
+ \item Auto-increment/decrement step using the atom data type (int, float, etc...) size
+ \item Arithmetic operations with integer values will scale those values by the atom byte length
+ \item Arrays are treated as pointers to data
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Pointer Arithmetic Examples}
+ \texttt{char *cbuf;\\
+int *ibuf;\\
+long *lbuf;\\
+...\\
+ibuf++; // Move forward "ibuf" pointer 4 bytes\\
+lbuf += 6; // Move forward "lbuf" pointer by 48 bytes}
+\end{slide}
+
+\begin{slide}{Pointer Arithmetic Pitfalls}
+ \texttt{char *cbuf;\\
+int *ibuf;\\
+long *lbuf;\\
+...\\
+// May print the same value,\\
+// or may not\\
+printf("0x\%016zx 0x\%016zx$\backslash$n", ibuf, ibuf += 4);}
+\end{slide}
+
+\end{document}

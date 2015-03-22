@@ -1,0 +1,47 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Race Conditions
+}
+\title{Race Conditions}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Introduction}
+Race conditions are a frequent complication in multithreaded programming. In multithreaded applications, there are frequently
+multiple parallel execution threads which operate almost entirely within a shared memory space. This is in contrast to
+multi-processing implementations, such as worker process pools, which typically operate within isolated memory segments.
+\end{slide}
+
+\begin{slide}{Common Vulnerabilities}
+\begin{itemize}
+ \item Data corruption
+ \item Data leakage
+ \item Program control / unauthorized access
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Example}
+Frequently, code relying upon dynamically-allocated data directing program control is a frequent way to introduce race
+conditions, especially if originally written for single-user operation.
+{\tt\par
+int code(struct global\_state *state) \{\par
+\ \ if(state->admin\_mode) \{\par
+\ \ \ \ admin\_menu();\par
+\ \ \} else \{\par
+\ \ \ \ user\_menu();\par
+\ \ \}\par
+\} }
+\end{slide}
+
+\begin{slide}{Example}
+{\tiny\url{http://blog.includesecurity.com/2014/06/exploit-walkthrough-cve-2014-0196-pty-kernel-race-condition.html}}
+\end{slide}
+
+\end{document}

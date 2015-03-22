@@ -1,0 +1,94 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Netowrk File System
+}
+\title{Network File System (NFS)}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Network File System (NFS)}
+One of the most common schemes for providing network-based file shares within a network is NFS. The protocol is
+ubiquitous and supported generally by every UNIX-like variant, as well as being supported by operating systems
+by Microsoft and Apple. The system provides a system for permission management, as well as user and role-based
+access controls. The protocol dates itself to the 1980's, with the current version released in 2000 and an update
+in 2010.
+\end{slide}
+
+\begin{slide}{Components}
+Like many network servers, NFS is implemented as a suite of function-specific components that together build a
+functioning NFS implementation. This includes:
+\begin{itemize}
+ \item RPC services to provide service identification, availability, and NFS file-locking
+ \item NFS daemon to provide the file access
+ \item Server configurations which define access controls and what portions of the server to export
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Service Access}
+In many cases, the following two components will be network-attached services executing with \texttt{root}
+permissions on the server.
+\begin{itemize}
+ \item RPC services
+ \item NFS Daemon
+\end{itemize}
+
+In the above, the RPC dependency would be considered unituitive out-of-the-box, and as such can introduce
+an unexpected vulnerability into the system.
+\end{slide}
+
+\begin{slide}{RPC Services}
+In many NFS configurations, there are four RPC services responsible for supporting the system:
+\begin{description}
+ \item[port mapper] Typically either \texttt{rpcbind} or \texttt{portmap}, this service is running on a known port (\texttt{111}).
+                    NFS was designed to publish itself to this system as a listening service.
+ \item[lock daemon] Typically \texttt{rpc.lockd}, designed to manage file-locking operations across the network mounts on different
+                    clients.
+ \item[stat daemon] Works in tandem with \textit{lock daemon} to facilitate crash/reboot recovery
+ \item[mount daemon] Facilitates mount / unmount requests (session management for NFS)
+\end{description}
+
+The above list is not comprehensive, and there exist other services providing additional features as well.
+\end{slide}
+
+\begin{slide}{RPC Vulnerability: statd \& lockd}
+Both of these services are provided for supporting additional features to clients. In most cases, clients will support blocking
+lock operations if they are running. Buggy versions of these tools can introduce vulnerabilities into the system:
+\begin{itemize}
+ \item Client denial of service after crash or deadlock
+ \item Server-side unauthorized \texttt{root} access and even RCE
+\end{itemize}
+
+Apple OS X <= 10.6.6 has a good example in \texttt{CVE-2011-0183}
+\end{slide}
+
+\begin{slide}{RPC Vulnerability: statd SIGPIPE}
+In 2004, \texttt{rpc.statd} commonly installed on many UNIX systems and Linux systems was identified to contain a vulnerability
+where it incorrectly handled SIGPIPE.
+
+PIPE signal is typically sent when a file handle is closed outside the current process. It tells the current process that the
+other end of the handle closed, such as the remote side of connections.
+
+\end{slide}
+
+\begin{slide}{Access Controls}
+Access control is managed through a text file named \texttt{/etc/exports}. This file allows you to control
+many access options.
+
+\begin{itemize}
+ \item Host-based (domain or IP) access control
+ \item Restrict to parts of filesystem hierarchy
+ \item Remapping of user Ids (prevent root access, etc.)
+\end{itemize}
+\end{slide}
+
+\end{document}

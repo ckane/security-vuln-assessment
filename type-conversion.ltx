@@ -1,0 +1,109 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Type Conversion Vulnerabilities
+}
+\title{Type Conversion Vulnerabilities}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Data Types}
+Data types are typically used to represent discrete values of information used by an application. Most
+programming languages support multiple data types, frequently utilizing native operations tailored for those
+data types that are provided by the underlying architecture.\par
+The C programming language offers three primary data type families, at its core:
+\begin{itemize}
+ \item integer
+ \item pointers
+ \item floating-point
+\end{itemize}
+More complex data types are typically built out of these core components.
+\end{slide}
+
+\begin{slide}{Type Family Details}
+\begin{itemize}
+ \item \textbf{Integer} types store values in the set $\mathbb{Z}$, and have an upper and lower bounds which
+                        is defined by the number of bytes allocated for storage
+ \item \textbf{Pointer} types store memory addresses, and data size storage restrictions are statically fixed to
+                        the address length (or lengths) offered by the underlying CPU architecture
+ \item \textbf{Floating Point} types store values intended to represent numeric quantity estimates in a manner
+                               similar to scientific notation. Data is divided into mantissa \& exponent, in a
+                               fashion defined by the CPU architecture and the data size chosen.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Type Sizes}
+The numeric (non-pointer) types can frequently be defined in data storage sizes, as well. The software author
+can tell the compiler how much space to reserve for the data as well as what size registers to use for the
+data arithmetic.\par
+Some common integer sizes (as defined for i386 and amd64 CPUs):
+\begin{itemize}
+ \item \texttt{char}: 1 byte
+ \item \texttt{short}: 2 bytes
+ \item \texttt{int}: 4 bytes
+ \item \texttt{long}: 4 or 8 bytes (depending upon CPU)
+ \item \texttt{long long}: 8 bytes
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Type Conversion}
+Arithmetic can only be performed when operands are same types. In many cases, a type conversion is needed under the
+following conditions:
+\begin{itemize}
+ \item Arithmetic between different types: (integer + float), (integer + pointer), (pointer + float.... \textit{plz. no.}),
+       (signed int + unsigned int)
+ \item Arithmetic between different data sizes: (int + long), (char + long long)
+\end{itemize}
+
+At the CPU level, all of these are treated as numbers. The CPU has the additional capability to operate on data as
+signed or unsigned numbers.
+\end{slide}
+
+\begin{slide}{Type Conversion Implementation}
+Type conversion is performed in C in two manners: Explicitly (by the author specifying a \textbf{type-cast}) or Implicitly
+(when the compiler inserts one in order to perform an author's arithmetic request)
+
+Where we have the following data variables defined:\par
+\texttt{char *abcs = "abcdefg"; unsigned int i = 12;}
+
+\begin{itemize}
+ \item\textbf{Implicit}: \texttt{abcs + i} $\rightarrow$ \texttt{char*} (compiler inserted cast for i, from int to char* type)
+ \item\textbf{Explicit}: \texttt{abcs + (char*)i} $\rightarrow$ \texttt{char*}
+ \item\textbf{Explicit}: \texttt{(int)abcs + i} $\rightarrow$ \texttt{int}
+\end{itemize}
+
+C provides implicit casts to reduce source code verbosity (contrast w/ Java)
+\end{slide}
+
+\begin{slide}{Type Conversion Rules}
+With the implicit type conversion feature comes the need for the compiler to have its own type
+conversion rules to follow. Much of this is detailed in \textbf{pp238-245} of the "\textit{Art of}" text.\par
+Many of these can be overridden with an explicit cast when needed, and therefore it is important to
+understand what the compiler is doing with your code underneath the hood.
+\end{slide}
+
+\begin{slide}{Assignment Pitfalls}
+\texttt{int i = -5;\\unsigned long f;\\\ \\f = i;\\
+printf("\%lu", f);\\\ }
+\\\ \\What's the output? -5? 0?\par
+No... it is \textbf{18446744073709551611}, of course!
+\end{slide}
+
+\begin{slide}{Arithmetic Pitfalls}
+\texttt{int i = -5;\\unsigned long j = 35;\\unsigned int f;\\
+\ \\
+f = i * 3;\\j = j + f;\\printf("\%lu$\backslash$n", j);\\
+\ \\
+j = 35;\\j = j + i * 3;\\printf("\%lu$\backslash$n", j);}
+\end{slide}
+
+\end{document}

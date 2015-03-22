@@ -1,0 +1,59 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Malware Propagation
+}
+\title{Malware Propagation}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+
+\begin{slide}{Malware Propagation}
+Propagation is the term frequently used to describe various distribution methods used by malicious tools. Generally this
+is related to the subset of malware which are designed to self-replicate. The common propagation techniques are frequently
+implemented in response to common network-level and trust vulnerabilities common in information systems.
+\end{slide}
+
+\begin{slide}{Common Techniques}
+Some common propagation techinques:
+\begin{itemize}
+ \item Worm
+ \item Virus
+ \item Bots / BotNets
+ \item Trojan Horses
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Worms}
+Refer to malware tools which propagate via making copies of the entire malicious program or script. 
+
+Common example: Autorun malware
+\end{slide}
+
+\begin{slide}{Viruses}
+Similar to worms, except rather than transmitting a full copy of the program, a virus is commonly a small amount of shellcode
+which is stitched into one or more existing files. This frequently means that a program which was once legitimate will be hijacked
+by inserting malicious code alongside exiting code, to make a program that performs both functions.
+\end{slide}
+
+\begin{slide}{Bots / BotNets}
+One of the more common and public transmission vectors. There are many different types of bots and purposes for these. A common
+example is bots which are designed to compromise targets, harvest more targets from contact lists, and subsequently provide the
+dual function of being nodes which can be coordinated to email future phishing attacks.
+\end{slide}
+
+\begin{slide}{Trojan Horses}
+Malware frequently delivered by packaging it inside of a program or file which alleges to perform an entirely different function. These
+are frequently used in what are known as "Spearphishing" attacks, as they can be the most difficult and manual types of distribution
+methods to construct.
+\end{slide}
+
+\end{document}

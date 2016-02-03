@@ -4,6 +4,7 @@
 \usepackage{epsfig}
 \usepackage{anyfontsize}
 \usepackage{url}
+\usepackage{listings}
 \pdsetup{
  lf=Security Vulnerability Assessment,
  rf=Return Oriented Programming
@@ -14,49 +15,91 @@
 \maketitle
 
 \begin{slide}{Introduction}
-An approach used to determine location of program execution, in order to establish control over
-execution of a system. Once an exploit is successful, ROP is typically used in order to get the
-intended shell-code to execute. In many cases, the exact location in memory where an exploit
-succeeds is not easily determined.
+Return Oriented Programming is a mechanism to take advantage of memory corruption vulnerabilities that enable a user of a
+program to take control over the stack using specially-crafted program input. By experimenting with a program, you may
+craft special input that can cause addresses in the stack to be overwritten with data provided by your input.
 \end{slide}
 
-\begin{slide}{Heap Spray}
-A common technique to work around this is the "heap spray". Take a small (1k-4k) chunk of simple
-assembled machine code, repeat it across many pages of memory, and each time you've increased the
-likelihood that a "random" jump will enter one of your deployed blocks of malicious code.
+\begin{slide}{Program Stack}
+ Below is a diagram of the "call stack". You'll notice that local variables, as well as restore addresses
+ for ESP/RSP and EBP/RBP registers are stored in this structure.
+ \begin{figure}
+  \epsfig{file=stack.eps,height=2in}
+  \caption{Stack Diagram}
+ \end{figure}
 \end{slide}
 
-\begin{slide}{NOP Sled/Fill}
-\begin{itemize}
-\item Fill or pad large sections of memory with simple instructions which can be repetitive, and non-destructively
-control program flow.
-\item Landing anywhere within the "sled" will gracefully catch and continue execution
-\item The x86 architecture has a NO-OP instruction (what amounts to EIP++ or RIP++) called "NOP" [0x90]
-\item Simple operations (INC EAX [0x41], INC EBX, etc...) may also be used
-\item Can get execution into a spot where offset to more executable shellcode can be determined
-\end{itemize}
+\begin{slide}{Example Vulnerability}
+\texttt{1 void\\
+2 vuln\_f(char *str) \{\\
+3 \ \ char buffer[100];\\
+4 \ \ strcpy(buffer, str);\\
+5 \}\\
+6 int main(int argc, char **argv) \{\\
+7 \ \ vuln\_f(argv[1]);\\
+8 \}\\}
 \end{slide}
 
-\begin{slide}{Return from call}
-Common approach is to perform the following sequence to determine current execution, following sled:\\
-\texttt{INC EAX\\
-INC EAX\\
-INC EAX\\
-CALL +0x220\\
-<evil code>\\
-...\\
-POP EAX\\
-JUMP EAX}
+\begin{slide}{Vulnerability Description}
+At line 3, the author allocates (at least) 100 bytes on the stack to provide space for a local buffer to store transient data
+that's discarded after function return. The author uses \texttt{strcpy} to copy from the user-provided string into the buffer.
+The \texttt{strcpy} will copy data until it reaches a NULL (0x00) byte, regardless of buffer's size in the code. Since the
+function return address, old stack, and old ebp are all on the stack above the buffer, it is possible to provide a cmdline
+argument that contains arbitrary binary code to overwrite the return address and cause the program to return to a location
+chosen by the user, rather than the author.
 \end{slide}
 
-\begin{slide}{Gaining Control}
-Once control is gained, you know:
-\begin{itemize}
- \item Where you are executing code
- \item Where, from your reference, other malicious code is implanted
-\end{itemize}
-Common themes include: loading more code from external files, decrypt loops to decrypt other concealed shell code,
-enumerating linked-in API functions (you have access to all DLL's loaded by exploite application)
+\begin{slide}{Usage}
+Using this exploit can help circumvent Data Execution Prevention (\textbf{DEP}). This is because you can control program execution flow
+without necessarily injecting your own new executable code at run-time. Thus, in order for ROP to work, all of the code that
+you wish to execute using the exploit must already exist in memory somewhere at the time of execution. For many Linux and Windows
+programs that load common functionality into memory using dynamic library linking at run-time, there are numerous possible
+options.
+\end{slide}
+
+\begin{slide}{Fragments}
+Since you can use the exploit to enter into any existing function, using the load address, you can also cause the program
+to enter into the middle of any existing code as well, thus executing a fragment. This may enable you to cause the portion
+of a system function to execute that you want, bypassing existing saftey mechanisms that may be built in to check data stored
+on the heap/stack.
+\end{slide}
+
+\begin{slide}{Gadgets}
+Building off of code fragments, another common approach to leveraging functions vulnerable to ROP is to employ what are known as
+\textbf{ROP Gadgets}. These are a nickname for extremely small snippets of assembly code that typically are 2-4 instructions in
+length, ending in a \texttt{RET} instruction. Rather than corrupting memory with a single return address to execute a function 
+you wish, you can write multiple addresses into memory that point to a bunch of these gadgets, causing execution to cascade through
+a sequence of disparate code.
+\end{slide}
+
+\begin{slide}{Gadget Examples}
+\texttt{58 pop \%eax\\
+3C ret\\}
+\vspace{0.1in}
+\texttt{33 C0 xor \%eax,\%eax\\
+3C \ \ \ ret\\}
+\vspace{0.1in}
+\texttt{68 78 56 34 12 push 0x12345678\\
+3C \ \ \ \ \ \ \ \ \ \ \ \ ret\\}
+\end{slide}
+
+\begin{slide}{Attack Surface}
+Specially-crafted command-line exploits require local access. A more common approach to leveraging these vulnerabilities is to
+deliver attacks targeting common end-user applications known to be vulnerable. Among those cited are frequently MSOffice, Java,
+Acrobat Reader, etc. Lesser applications known to be utilized by targets are also common (MS Vizio, media editing software, etc.).
+\end{slide}
+
+\begin{slide}{Building Exploit for End-user Apps}
+In the case of end-user applications, you may be delivering a video, PDF file, or Office document that contains your exploit, but
+also contains a wealth of other information to make it appear "well formed" to the application. You may be able to introduce custom
+ROP gadgets into executable memory space by including fragments within other objects contained within the exploit payload. For instance,
+some frames from a video file may masquerade as corrupted but contain desired ROP gadgets.
+\end{slide}
+
+\begin{slide}{Using Applications}
+Researching the exploit target platform ahead of time in different states can help an exploit author identify where needed ROP gadgets
+will exist in memory at the time of exploit. This can be extremely helpful when, say, data provided through the exploit document cannot
+be coerced to load into executable memory space.
 \end{slide}
 
 \end{document}

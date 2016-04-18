@@ -1,0 +1,154 @@
+\documentclass[style=elcolors, mode=present]{powerdot}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{anyfontsize}
+\usepackage{hyperref}
+\usepackage{breakurl}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\pdsetup{
+ lf=Security Vulnerability Assessment,
+ rf=Closing Summary
+}
+\title{Security Vulnerability Assessment\\Closing Summary}
+\author{Coleman Kane\\Coleman.Kane@ge.com}
+\begin{document}
+\maketitle
+\begin{slide}{Legal \& Ethical Issues}
+There are many legal \& ethical concerns. Many of the questions around disclosure as
+well as vulnerability and exploit research.
+ \begin{itemize}
+  \item Legal exposure resulting from publishing
+  \item Waiting periods, limited release
+  \item Whether Proof-of-Concept (PoC) code may be adopted by adversaries
+  \item Concerns with non-reporting: Whether those responsible are willing to patch
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Vulnerability Assessment}
+Vulnerability Assessment involves the process of determining what vulnerabilities exist
+in the environment, what don't, and how widespread they are. In this regard, it can be
+considered a vulnerability map of your attack surface.
+ \begin{itemize}
+  \item Classification
+  \item OWASP process (one example of many, not a rule)
+  \item Mitre CWE - Common Weakness Enumeration
+  \item Microsoft STRIDE
+  \item Lockheed Martin Cyber Kill Chain
+  \item ISO-27002 Comprehensive Information Security Standard
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Software \& OS Vulnerabilities}
+As new software is introduced, or existing software updated, the probability of introducing
+new vulnerabilities along with it exists. OS-level vulnerabilities are typically of the
+software variety, but have the added consequence of exposing Supervisor-level access through
+these vulnerabilities.
+ \begin{itemize}
+  \item Mitre CVE - Common Vulnerabilities and Exposures
+  \item Memory corruption (stack, heap, etc.)
+  \item Race conditions
+  \item Arbitrary code execution
+  \item Control-flow hijacking
+  \item Trojan Horses (masking intent)
+  \item Covert/subliminal channels (hiding activity)
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Software \& OS Design and Implementation}
+Software is increasingly part of many fields of work. A proliferation of the ``\textit{
+Internet of Things}'' is only going to amplify this trend. It becomes critical to deliver
+\textbf{secure-by-design} systems, rather than simply managing a vulnerable system.
+ \begin{itemize}
+  \item Privilege escalation / resource access control management
+  \item Least-privileged access
+  \item Ubuntu AppArmor
+  \item GCC ProPolice / stack-smashing-protection
+  \item SeLinux, HardenedBSD
+  \item Multiple Independent Levels of Security (MILS)
+  \item Auditing
+  \item \url{https://www.owasp.org/index.php/Source_Code_Analysis_Tools}
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Language Design Issues}
+Programming languages, and the design decisions within, can be the source of many vulnerabilities.
+This is especially the case where programmers skilled primarily in one language are instructed to
+develop in a new language.
+ \begin{itemize}
+  \item Type system, nuances, machine-representation of native types
+  \item Control-flow, subroutines, argument-passing
+  \item Standard library code, a.k.a. \textit{Runtime}
+  \item Default properties (public, private, etc.)
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Network and Protocol Vulnerabiltiies}
+Networking introduces foreign data (data created outside the current system) streams into your code.
+Networking also frequently introduces real-time, interactive access to your software for remote and
+untrusted third-parties.
+ \begin{itemize}
+  \item Centralized authentication / authorization systems (KDC, ActiveDirectory, etc.)
+  \item File servers (centralized file storage)
+  \item Assets configured and managed by multiple parties
+  \item Viruses \& Worms
+  \item Data hostage
+  \item Confidentiality concerns (IPSec, etc.)
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Network Attacks}
+Many network-delivered attacks exist:
+ \begin{itemize}
+  \item Denial of Service (DoS, Distributed DoS)
+  \item ARP Poisoning
+  \item Man-in-the-Middle, Mailbox, Browser, etc.
+  \item Remote Access Tools (RAT)
+  \item Strategic Web Compromise (SWC) a.k.a. Watering-hole or Poison-Well attacks
+  \item Data leakage via browser
+  \item Java, Flash, JavaScript, ActiveX - Malicious executable delivery
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Intrusion Detection \& Prevention}
+ Mitigation of vulnerability can be achieved through network and system monitoring, with detection
+ and prevention of events considered to be undesirable.
+ \begin{itemize}
+  \item Firewalls
+  \item Security Onion - Bro, Suricata, Snort, Network Intrusion Detection Systems (NIDS)
+  \item Anti-Virus
+  \item Host intrusion Detection/Prevention Systems (HIPS)
+  \item Application-level logging \& Monitoring
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{Configuration Vulnerabilities}
+ Software that is otherwise relatively secure can be made insecure through mis-configuration
+ or poorly-managed configuration. 
+ \begin{itemize}
+  \item Scaling problems
+  \item Configuration managment - Jenkins, Chef, Puppet (write once, deploy many)
+  \item Manage configurations in revision-control (like Git, etc...)
+  \item Disable unnecessary services (many OS's install ``common'' services)
+  \item Reverse Turing Test (can computer identify who's human vs.\ bot?)
+ \end{itemize}
+\end{slide}
+
+\begin{slide}{User Interfaces \& Human Factors}
+ Social engineering continues to be a significant vector of attack. Humans are generally trusting,
+ and also often overworked. These attributes can contribute to success of social engineering
+ attacks.
+ \begin{itemize}
+  \item Phishing / Spear-phishing
+  \item Pretexting
+  \item Awareness
+  \item Social Engineering aspect of the HBGary Federal hack
+        {\small\url{http://arstechnica.com/tech-policy/2011/02/anonymous-speaks-the-inside-story-of-the-hbgary-hack/}}
+  \item Multiple-reviewer mitigation strategies
+  \item Verification
+ \end{itemize}
+\end{slide}
+
+\end{document}
